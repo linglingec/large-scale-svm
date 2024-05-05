@@ -10,11 +10,13 @@ class MiniBatchSGD:
         X_shuffled = X[indices]
         y_shuffled = y[indices]
         mini_batches = [(X_shuffled[i:i + batch_size], y_shuffled[i:i + batch_size]) for i in range(0, len(y), batch_size)]
+        
         return mini_batches
 
     def update_weights(self, X, y, w, lambda_):
         step_size = self.learning_rate / (1 + self.learning_rate * lambda_)
         loss = 0
+
         for i in range(len(y)):
             margin = y[i] * np.dot(X[i], w)
             if margin < 1:
@@ -22,8 +24,10 @@ class MiniBatchSGD:
                 loss += 1 - margin
             else:
                 w = (1 - step_size * lambda_) * w
+
         reg_loss = 0.5 * lambda_ * np.sum(w ** 2)
         total_loss = (loss / len(y)) + reg_loss
+
         return w, total_loss
 
 class Adagrad(MiniBatchSGD):

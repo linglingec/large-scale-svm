@@ -9,12 +9,14 @@ def get_data(dataset):
         data = pd.read_csv('data/toydata_tiny.csv')
         X = data.iloc[:, :-1].values
         y = data.iloc[:, -1].values
+
         return X, y
 
     if dataset == 'large':
         data = pd.read_csv('data/toydata_large.csv')
         X = data.iloc[:, :-1].values
         y = data.iloc[:, -1].values
+
         return X, y
 
     if dataset == 'imdb':
@@ -27,6 +29,7 @@ def get_data(dataset):
 
         X_train = X_train.item().todense()
         X_test = X_test.item().todense()
+        
         return X_train, X_test, y_train, y_test
 
 def grid_search_svm(X, y, model, optimizer, lambdas, learning_rates, epochs=30, batch_size=10, n_splits=5):
