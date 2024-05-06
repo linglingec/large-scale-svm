@@ -5,7 +5,7 @@ This readme file describes our directory for the Programming Assignment 2.
 
 ## Structure
 The directory contains the following files:
--   `models.py`: contains our *LinearSVM* implementation
+-   `model.py`: contains our *LinearSVM* implementation
 -   `optimizers.py`: contains our *MiniBatchSGD* and *Adagrad* implementation
 -   `RFF.py`: contains our *RandomFourierFeatures* implementation
 -   `utils.py`: contains our 'read data' function *get_data()*, *grid_search_svm()* and *cross_val_score()*
