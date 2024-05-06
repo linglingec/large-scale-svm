@@ -25,9 +25,7 @@ hyperparameters are:
 | imdb.npz           | 0.001         | 0.01                                  |
 
 
-### Include a plot illustrating convergence of SGD for your selected hyperparamters (this
-can be for a single fold, and should show the training error over the number of SGD
-epochs).  
+### Include a plot illustrating convergence of SGD for your selected hyperparamters (this can be for a single fold, and should show the training error over the number of SGD epochs).  
 
 All calculations, code and plots can be found in our Jupyter Notebook. You can find the
 plots also in Fig \ref{fig:test} for the sake of completeness:
