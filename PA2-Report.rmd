@@ -1,0 +1,302 @@
+---
+title: PA2 Report - MMD
+author: Egor Fadeev, 12313685 - Thomas Geier, 12026958
+date: 04.05.2024
+output: pdf_document
+---
+
+# Linear SVM Model
+As a baseline model implement a linear SVM and train it in a standard way (i.e., use standard mini-batch SGD). Train a SVM for each of the
+datasets, select a suitable learning rate and regularization parameter.
+
+### Report how you selected the learning rate and regularization parameter, and report the selected hyperparameters. Did you use different parameters for the different datasets?  
+In order to find the best parameters for our implemenation we performed grid search using our function `grid_search_svm`:
+This function gets a set of learning rates and regularization parameters and for each combination, it trains the SVM model k times (using `Kfold`) on training data, evaluates its performance on validation data, 
+and records the mean accuracy. The parameters with the highest mean accuracy are returned.
+For the toydata set we tested the learning rates $0.001, 0.01, 0.1$ as well as
+the regularization parameters ($\lambda$) $0.1, 0.05, 0.1$ and their combinations. For the IMDB data set we just 
+tested $0.001, 0.01$ for learning rate and $0.01, 0.1$ for $\lambda$ because of runtime. The final selected
+hyperparameters are:
+
+| Dataset            | Learning Rate | Regularization Parameter ($\lambda$) |
+|--------------------|---------------|---------------------------------------|
+| toydata_tiny.csv   | 0.001         | 0.01                                  |
+| toydata_large.csv  | 0.001         | 0.01                                  |
+| imdb.npz           | 0.001         | 0.01                                  |
+
+
+### Include a plot illustrating convergence of SGD for your selected hyperparamters (this can be for a single fold, and should show the training error over the number of SGD epochs).  
+
+All calculations, code and plots can be found in our Jupyter Notebook. You can find the
+plots also in Fig \ref{fig:test} for the sake of completeness:
+
+\begin{figure}[!htb]
+\centering
+\begin{minipage}{.33\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/SVM-tiny-plot.png}
+  \caption{$`toydata\_tiny.csv`$}
+\end{minipage}%
+\begin{minipage}{.33\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/SVM-large-plot.png}
+  \caption{$`toydata\_large.csv`$}
+\end{minipage}%
+\begin{minipage}{.33\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/SVM-imdb-plot.png}
+  \caption{$`imdb.npz`$}
+\end{minipage}
+\caption{Connvergence of SGD for selected hyperparamters for each data set}
+\label{fig:test}
+\end{figure}
+
+### Report the achieved classification accuracy and runtime for each of the datasets.
+All code leading up to the following classification accuracies can be found in our Jupyter Notebook:
+
+| Dataset            | 5-fold cross-validation runtime   |  5-fold cross-validation accuracy |
+|--------------------|-----------------------------------|-----------------------------------|
+| toydata_tiny.csv   | 0.09 s                            | 0.99                              |
+| toydata_large.csv  | 24.57 s                           | 1.0                               |
+| imdb.npz           | 2483.92 s                         | 0.86                              |
+
+### Briefly discuss your implementation of the SVM and SGD
+Our `LinearSVM` class (can be found in `model.py`) implements a linear Support Vector Machine (SVM) model with L2 regularization. 
+Here's a brief discussion of its key components:
+
+- **Initialization**:  The constructor `__init__` initializes the SVM model with a regularization parameter `lambda_`. 
+  It also initializes the weight vector `w` to `None`.  
+
+- **Training**: The `fit` method trains the SVM model using stochastic gradient descent (SGD)
+  optimization. It takes input data X, target labels y, an optimizer object (in the first case `MiniBatchSGD`, later `Adagrad` from `optimizers.py`), and optional
+  parameters such as the number of epochs and batch size. Within each epoch, it iterates over 
+  mini-batches of the training data and updates the weight vector `w` using the optimizer's `update_weights` method. 
+  It also tracks the loss history during training so one can plot it like in Fig \ref{fig:test}.  
+
+- **Prediction**: The `predict` method takes input data `X` and predicts the class labels using the 
+  learned weight vector `w`. It computes the dot product of the input data and `w` and applies the 
+  sign function to determine the predicted class labels.
+
+Further information for parameters and returns can be found in the documentation of `LinearSVM` in 
+the file `model.py`.
+
+Our `MiniBatchSGD` class implements stochastic gradient descent (SGD) optimization for training the linear Support Vector Machine (SVM) model. 
+Here's a brief overview of its key components:
+
+- **Initialization:** The constructor `__init__` initializes the SGD optimizer with a learning rate (`learning_rate`). By default, the learning rate is set to $0.01$.
+
+- **Creating Mini-batches:** The `create_mini_batches` method generates mini-batches from the input data `X` and target 
+  labels `y` with a specified batch size. It shuffles the indices of the data and then creates mini-batches by slicing 
+  the shuffled data accordingly.
+
+- **Updating Weights:** The `update_weights` method updates the weight vector `w` based on the mini-batch data and target 
+  labels. It iterates through each sample in the mini-batch, computes the margin, and updates the weights using the gradient 
+  of the multi class hinge loss function. If the margin is less than $1$, indicating a misclassified sample, the weights are updated to 
+  minimize the hinge loss. Regularization with L2 penalty is applied to prevent overfitting. The method returns the updated 
+  weights (`w`) and the total loss (`total_loss`), which includes both the hinge loss and the regularization term.
+
+Further information for parameters and returns can be found in the documentation of `MiniBatchSGD` in 
+the file `optimizers.py`.
+
+# Optimization using Adagrad
+Implement Adagrad using the diagonal
+approximation for optimization. Train a linear SVMs using the original features (i.e., do not use the RFFs).
+
+###  Report how you selected the learning rate and regularization parameter, and report the selected hyperparameters. Did you use different parameters for the different datasets?
+In order to select our learning rate and regularization parameters we used and performed the same strategy as
+the previous sub task. The only difference is that instead of `MiniBatchSGD`, we used `Adagrad` as our optimizer.
+ The resulting hyperparameters are:
+
+| Dataset            | Learning Rate | Regularization Parameter ($\lambda$) |
+|--------------------|---------------|---------------------------------------|
+| toydata_tiny.csv   | 0.1           | 0.01                                  |
+| toydata_large.csv  | 0.1           | 0.01                                  |
+| imdb.npz           | 0.001         |  0.1                                  |
+
+
+### Report the achieved classification accuracy and runtime for each of the datasets. What is the impact of the adagrad regarding the performance in comparison to standard SGD for the different datasets?
+All code leading up to the following classification accuracies can be found in our Jupyter Notebook:
+
+| Dataset            | 5-fold cross-validation runtime   |  5-fold cross-validation accuracy |
+|--------------------|-----------------------------------|-----------------------------------|
+| toydata_tiny.csv   | 0.09 s                            | 0.99                              |
+| toydata_large.csv  | 24.65 s                           | 1.0                               |
+| imdb.npz           | 2392.39 s                         | 0.89                              |
+
+The impact of `Adagrad` is barely noticeable on `toydata_tiny.csv` and `toydata_large.csv`. 
+There wasn't much room to improve given the accuracies in the preiovus task were already
+$0.99$ and $1.0$ and also the runtime is quite the same.  
+However on `imdb.npz`, `Adagrad` helped to improve the accuracy by $0.03$. It also took approx.
+91 seconds less to achieve this result.
+
+### Repeat your experiments using random dropout of input features with probability $p = 0.5$ for the IMDB data. Does this change affect performance and if so, how?
+While repeating the experiment using random dropout of input features the accuracy went down to $0.86$.
+Random dropout is typically used as a regularization technique to prevent overfitting by forcing the
+model to not rely excessively on any single or a small group of features, but in our case it might have affected 
+the model's ability to fully learn and generalize from the dataset by dropping features that were
+critical for making accurate predictions (see Fig 5). 
+
+```{r, out.width='33%', fig.align='center', fig.cap="Convergence of Adagrad on the IMDB dataset with dropout", echo=FALSE}
+knitr::include_graphics("images/dropout-plot.png")
+```
+
+### Briefly discuss your implementation of Adagrad. How did you adjust it to perform stochastic optimization instead of online learning. Provide pseudo-code.
+Our `Adagrad` optimizer adapts the learning rate for each parameter based on the historical gradients. 
+Here's how it is adjusted to perform stochastic optimization instead of online learning:
+
+- **Initialization:** Initialize the Adagrad optimizer with a learning rate (`learning_rate`) and a small constant (`epsilon`) 
+  for numerical stability. Also, initialize an accumulator for squared gradients (`gradient_accumulator`) as `None`.
+
+- **Update Weights:** For each mini-batch of training data:
+    - Compute the gradient of the loss function with respect to the weights.
+    - Update the accumulator by adding the square of the gradient.
+    - Calculate adjusted learning rates for each parameter based on the accumulated squared gradients.
+    - Update the weights using the adjusted learning rates and the gradients.
+
+In other words it is accumulating gradients over mini-batches rather than updating the weights 
+after processing each individual sample. Here is the psueod code:
+
+```
+Function update_weights(X, y, w, lambda_, gradient_accumulator = 0 (same shape as w)):
+
+    gradient = array of 0 with the same shape as w
+    loss = 0
+
+    For each sample i in the mini-batch:
+        Compute the margin = y[i] * (X[i].T *  w)
+        If margin < 1:
+            gradient = gradient - y[i] * X[i]
+            lloss = loss - (1 - margin)
+
+    Add the regularization term lambda_ * w to the gradient
+
+    Update gradient_accumulator by adding gradient**2
+
+    Calculate adjusted_learning_rates with gradient_accumulator and epsilon
+
+    Update weights by subtracting adjusted_learning_rates * gradient
+
+    Calculate total_loss
+
+    Return updated weights and total_loss
+```
+
+If you are interested in the real code and more information about parameters and returns take look
+at the `Adagrad` class in `optimizers.py`.
+
+# Random Fourier Features
+Use RFFs to approximate a Gaussian kernel in
+a SVM. Train SVMs with RFFs on each of the datasets, selecting a suitable learning
+rate and regularization parameter. Test at least 3 different numbers of RFFs (>= 100 features)
+
+### Report how you selected the learning rate and regularization parameter, and report the selected hyperparameters. Did you use different parameters for the different datasets?
+In this task let's take the optimal hyperparameters for each dataset from the previous tasks:
+
+| Dataset            | Learning Rate | Regularization Parameter ($\lambda$) |
+|--------------------|---------------|---------------------------------------|
+| toydata_tiny.csv   | 0.1           | 0.01                                  |
+| toydata_large.csv  | 0.1           | 0.01                                  |
+| imdb.npz           | 0.001         |  0.1                                  |
+
+
+### Include a plot illustrating convergence of SGD/Adagrad for your selected hyperparamters (this can be for a single fold, and should show the training error over the number of SGD/Adagrad epochs).
+You can find plots illustrating convergence of SGD and Adagrad for our selected hyperparameters for all three
+data sets with $100, 200$ and $300$ RFF in our Jupyter Notebook. We will include only one example in
+this report (see Figure \ref{fig:RFF})
+
+
+\begin{figure}[!htb]
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/200RFF-large-SGD.png}
+  \caption{$`toydata\_tiny.csv`$}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/200RFF-large-Adagrad.png}
+  \caption{$`toydata\_large.csv`$}
+\end{minipage}%
+\caption{Connvergence of SGD and Adagrad on the large dataset with 200 RFF ($learning\_rate = 0.1$, $\lambda = 0.01$)}
+\label{fig:RFF}
+\end{figure}
+
+### Report the achieved classification accuracy and runtime for each of the datasets. Does the number of RFFs affect the classification accuracy? If so, how?
+All code leading up to the following classification accuracies can be found in our Jupyter Notebook:
+
+| Dataset            | RFF  | 5-fold cross-validation runtime   |  5-fold cross-validation accuracy |
+|--------------------|------|-----------------------------------|-----------------------------------|
+| toydata_tiny.csv   | 100  | 0.12 s                            | 0.96                              |
+| toydata_tiny.csv   | 200  | 0.12 s                            | 0.91                              |
+| toydata_tiny.csv   | 300  | 0.12 s                            | 0.94                              |
+| toydata_large.csv  | 100  | 26.09 s                           | 1.0                               |
+| toydata_large.csv  | 200  | 33.26 s                           | 1.0                               |
+| toydata_large.csv  | 300  | 39.38 s                           | 1.0                               |
+| imdb.npz           | 100  | 17.29 s                           | 0.51                              |
+| imdb.npz           | 200  | 17.30 s                           | 0.50                              |
+| imdb.npz           | 300  | 18.29 s                           | 0.49                              |
+
+In the `toydata_large.csv` data the accuracy is always $1.0$ so the number of RFF doesn't make any difference.
+However looking at the other two datasets the accuracy is slightly falling with more RFFs. In the `toydata_tiny.csv`
+dataset the accuracy with $300$ RFF is slightly higher than the one with $200$ RFF, but given that in the
+`imdb.npz` dataset the accuracy is gettig less with higher RFF, we consider the accuracy of the tiny data with
+$300$ RFF an anomaly.
+
+
+### Briefly discuss your implementation of RFFs.
+Our `RandomFourierFeatures` class implements Random Fourier Features (RFFs) for approximate kernel 
+feature mapping. Here's a brief overview of its key components:
+
+- **Initialization:** The constructor `__init__` initializes the RFFs with parameters `n_components` (number of random
+  Fourier features) and `gamma` (scale parameter for the random features). It also initializes the `weights` and `bias` parameters to `None`.
+
+- **Fitting:** The fit method generates random weights and biases for the RFFs. It generates random `weights` from a
+  normal distribution with mean $0$ and variance $2 * `gamma`$, and `bias` from a uniform distribution between $0$ and
+  $2 * \pi$. The number of weights and biases is determined by the input dimensionality `d` and the specified number
+  of components `n_components`.
+
+- **Transformation:** The `transform` method applies the random feature mapping to input data `X`. It computes the dot
+  product of the input data and the random weights, adds the biases, and applies the cosine function to 
+  obtain the transformed features. The scaling factor `sqrt(2/n_components)` is applied to normalize the 
+  features.
+
+- **Fit-Transform:** The `fit_transform` method combines fitting and transformation steps. It fits the RFFs to the 
+  input data `X` and then transforms `X` using the generated random features.
+
+### For IMDB, report the runtime and performance (in plots or a single plot) when training on 1000, 2000, and 3000 training samples, respectively. Report the same when using sklearn’s svm.SVC class. What do you observe?
+These are the runtimes and performances when training on 1000, 2000, and 3000 training samples using our 
+and sklearn’s implemenation:
+
+
+| Implementation | Number of Training Samples | Runtime (s) | Accuracy |
+|----------------|----------------------------|-------------|----------|
+| Ours           | 1000                       | 0.82        | 0.50     |
+| Ours           | 2000                       | 1.04        | 0.50     |
+| Ours           | 3000                       | 1.76        | 0.50     |
+| Sklearn        | 1000                       | 0.80        | 0.52     |
+| Sklearn        | 2000                       | 1.26        | 0.51     |
+| Sklearn        | 3000                       | 2.83        | 0.51     |
+
+You can see corresponding plots in Fig \ref{fig:last}.
+
+
+\begin{figure}[!htb]
+\centering
+\begin{minipage}{.33\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/1000-samples.png}
+  \caption{$1000$ training samples}
+\end{minipage}%
+\begin{minipage}{.33\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/2000-samples.png}
+  \caption{$2000$ training samples}
+\end{minipage}%
+\begin{minipage}{.33\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/3000-samples.png}
+  \caption{$3000$ training samples}
+\end{minipage}
+\caption{Connvergence of Adagrad on the IMDB dataset with $1000, 1000, 3000$ training samples}
+\label{fig:last}
+\end{figure}
