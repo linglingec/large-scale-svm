@@ -56,11 +56,11 @@ plots also in Fig \ref{fig:test} for the sake of completeness:
 ### Report the achieved classification accuracy and runtime for each of the datasets.
 All code leading up to the following classification accuracies can be found in our Jupyter Notebook:
 
-| Dataset            | Training accuracy |  5-fold cross-validation accuracy |
-|--------------------|-------------------|-----------------------------------|
-| toydata_tiny.csv   | 0.995             | 0.99                              |
-| toydata_large.csv  | 1.0               | 1.0                               |
-| imdb.npz           | 0.85              | 0.86                              |
+| Dataset            | 5-fold cross-validation runtime   |  5-fold cross-validation accuracy |
+|--------------------|-----------------------------------|-----------------------------------|
+| toydata_tiny.csv   | 0.09 s                            | 0.99                              |
+| toydata_large.csv  | 24.57 s                           | 1.0                               |
+| imdb.npz           | 2483.92 s                         | 0.86                              |
 
 ### Briefly discuss your implementation of the SVM and SGD
 Our `LinearSVM` class (can be found in `model.py`) implements a linear Support Vector Machine (SVM) model with L2 regularization. 
@@ -105,10 +105,25 @@ Implement Adagrad using the diagonal
 approximation for optimization. Train a linear SVMs using the original features (i.e., do not use the RFFs).
 
 ###  Report how you selected the learning rate and regularization parameter, and report the selected hyperparameters. Did you use different parameters for the different datasets?
+In order to select our learning rate and regularization parameters we used and performed the same strategy as
+the previous sub task. The only difference is that instead of `MiniBatchSGD`, we used `Adagrad` as our optimizer.
+ The resulting hyperparameters are:
 
+| Dataset            | Learning Rate | Regularization Parameter ($\lambda$) |
+|--------------------|---------------|---------------------------------------|
+| toydata_tiny.csv   | ?         | ?                                  |
+| toydata_large.csv  | ?         | ?                                  |
+| imdb.npz           | ?        | ?                                  |
 
 
 ### Report the achieved classification accuracy and runtime for each of the datasets. What is the impact of the adagrad regarding the performance in comparison to standard SGD for the different datasets?
+All code leading up to the following classification accuracies can be found in our Jupyter Notebook:
+
+| Dataset            | 5-fold cross-validation runtime   |  5-fold cross-validation accuracy |
+|--------------------|-----------------------------------|-----------------------------------|
+| toydata_tiny.csv   | . s                            | .                              |
+| toydata_large.csv  | . s                           | .                               |
+| imdb.npz           | . s                         | .                              |
 
 
 
@@ -117,7 +132,6 @@ approximation for optimization. Train a linear SVMs using the original features 
 
 
 ### Briefly discuss your implementation of Adagrad. How did you adjust it to perform stochastic optimization instead of online learning. Provide pseudo-code.
-
 Our `Adagrad` optimizer adapts the learning rate for each parameter based on the historical gradients. 
 Here's how it is adjusted to perform stochastic optimization instead of online learning:
 
@@ -167,6 +181,14 @@ a SVM. Train SVMs with RFFs on each of the datasets, selecting a suitable learni
 rate and regularization parameter. Test at least 3 different numbers of RFFs (>= 100 features)
 
 ### Report how you selected the learning rate and regularization parameter, and report the selected hyperparameters. Did you use different parameters for the different datasets?
+Also for this subtask we used the same methods to select the parameters as in the previous tasks. These
+are the chosen hyperparameters:
+
+| Dataset            | Learning Rate | Regularization Parameter ($\lambda$) |
+|--------------------|---------------|---------------------------------------|
+| toydata_tiny.csv   | ?         | ?                                  |
+| toydata_large.csv  | ?         | ?                                  |
+| imdb.npz           | ?        | ?                                  |
 
 
 ### Include a plot illustrating convergence of SGD/Adagrad for your selected hyperparamters (this can be for a single fold, and should show the training error over the number of SGD/Adagrad epochs).
@@ -195,11 +217,21 @@ rate and regularization parameter. Test at least 3 different numbers of RFFs (>=
 ### Report the achieved classification accuracy and runtime for each of the datasets. Does the number of RFFs affect the classification accuracy? If so, how?
 All code leading up to the following classification accuracies can be found in our Jupyter Notebook:
 
-| Dataset            | Training accuracy |  5-fold cross-validation accuracy |
-|--------------------|-------------------|-----------------------------------|
-| toydata_tiny.csv   | 0.995             | 0.93                              |
-| toydata_large.csv  | 1.0               | 1.0                               |
-| imdb.npz           | ?                 | ?                                 |
+-
+- WHAT CHANGED IN HYPERPARAMTER TUNING
+-
+
+
+| Dataset            | 5-fold cross-validation runtime   |  5-fold cross-validation accuracy |
+|--------------------|-----------------------------------|-----------------------------------|
+| toydata_tiny.csv   | . s                            | .                              |
+| toydata_large.csv  | . s                           | .                               |
+| imdb.npz           | . s                         | .                              |
+
+-
+- Does the number of RFFs affect the classification accuracy
+-
+
 
 ### Briefly discuss your implementation of RFFs.
 Our `RandomFourierFeatures` class implements Random Fourier Features (RFFs) for approximate kernel 
