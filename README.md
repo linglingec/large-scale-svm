@@ -10,6 +10,7 @@ The directory contains the following files:
 -   `RFF.py`: contains our *RandomFourierFeatures* implementation
 -   `utils.py`: contains our 'read data' function *get_data()*, *grid_search_svm()* and *cross_val_score()*
 -   `test.ipynb`: is the final Jupyter Notebook where the assignment is done with the help of all latter implementations 
+-   `PA2-Report.pdf`: is the corresponding report to this programming assignment
 
 Further descriptions of classes and functions can be found in the respective files.
 The directory includes also a data folder which contains the data (`imdb.npz`, `toydata_large.csv`, `toydata_tiny.csv`) needed to run the experiments.
