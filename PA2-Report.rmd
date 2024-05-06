@@ -78,9 +78,146 @@ Here's a brief discussion of its key components:
   learned weight vector `w`. It computes the dot product of the input data and `w` and applies the 
   sign function to determine the predicted class labels.
 
+Further information for parameters and returns can be found in the documentation of `LinearSVM` in 
+the file `model.py`.
+
+Our `MiniBatchSGD` class implements stochastic gradient descent (SGD) optimization for training the linear Support Vector Machine (SVM) model. 
+Here's a brief overview of its key components:
+
+- **Initialization:** The constructor `__init__` initializes the SGD optimizer with a learning rate (`learning_rate`). By default, the learning rate is set to $0.01$.
+
+- **Creating Mini-batches:** The `create_mini_batches` method generates mini-batches from the input data `X` and target 
+  labels `y` with a specified batch size. It shuffles the indices of the data and then creates mini-batches by slicing 
+  the shuffled data accordingly.
+
+- **Updating Weights:** The `update_weights` method updates the weight vector `w` based on the mini-batch data and target 
+  labels. It iterates through each sample in the mini-batch, computes the margin, and updates the weights using the gradient 
+  of the multi class hinge loss function. If the margin is less than $1$, indicating a misclassified sample, the weights are updated to 
+  minimize the hinge loss. Regularization with L2 penalty is applied to prevent overfitting. The method returns the updated 
+  weights (`w`) and the total loss (`total_loss`), which includes both the hinge loss and the regularization term.
+
+Further information for parameters and returns can be found in the documentation of `MiniBatchSGD` in 
+the file `optimizers.py`.
+
+# Optimization using Adagrad
+Implement Adagrad using the diagonal
+approximation for optimization. Train a linear SVMs using the original features (i.e., do not use the RFFs).
+
+###  Report how you selected the learning rate and regularization parameter, and report the selected hyperparameters. Did you use different parameters for the different datasets?
 
 
 
+### Report the achieved classification accuracy and runtime for each of the datasets. What is the impact of the adagrad regarding the performance in comparison to standard SGD for the different datasets?
 
 
-Further information for parameters and returns can be found in the `LinearSVM` of the classes in `model.py`.
+
+### Repeat your experiments using random dropout of input features with probability $p = 0.5$ for the IMDB data. Does this change affect performance and if so, how?
+
+
+
+### Briefly discuss your implementation of Adagrad. How did you adjust it to perform stochastic optimization instead of online learning. Provide pseudo-code.
+
+Our `Adagrad` optimizer adapts the learning rate for each parameter based on the historical gradients. 
+Here's how it is adjusted to perform stochastic optimization instead of online learning:
+
+- **Initialization:** Initialize the Adagrad optimizer with a learning rate (`learning_rate`) and a small constant (`epsilon`) 
+  for numerical stability. Also, initialize an accumulator for squared gradients (`gradient_accumulator`) as `None`.
+
+- **Update Weights:** For each mini-batch of training data:
+    - Compute the gradient of the loss function with respect to the weights.
+    - Update the accumulator by adding the square of the gradient.
+    - Calculate adjusted learning rates for each parameter based on the accumulated squared gradients.
+    - Update the weights using the adjusted learning rates and the gradients.
+
+In other words it is accumulating gradients over mini-batches rather than updating the weights 
+after processing each individual sample. Here is the psueod code:
+
+```
+Function update_weights(X, y, w, lambda_, gradient_accumulator = 0 (same shape as w)):
+
+    gradient = array of 0 with the same shape as w
+    loss = 0
+
+    For each sample i in the mini-batch:
+        Compute the margin = y[i] * (X[i].T *  w)
+        If margin < 1:
+            gradient = gradient - y[i] * X[i]
+            lloss = loss - (1 - margin)
+
+    Add the regularization term lambda_ * w to the gradient
+
+    Update gradient_accumulator by adding gradient**2
+
+    Calculate adjusted_learning_rates with gradient_accumulator and epsilon
+
+    Update weights by subtracting adjusted_learning_rates * gradient
+
+    Calculate total_loss
+
+    Return updated weights and total_loss
+```
+
+If you are interested in the real code and more information about parameters and returns take look
+at the `Adagrad` class in `optimizers.py`.
+
+# Random Fourier Features
+Use RFFs to approximate a Gaussian kernel in
+a SVM. Train SVMs with RFFs on each of the datasets, selecting a suitable learning
+rate and regularization parameter. Test at least 3 different numbers of RFFs (>= 100 features)
+
+### Report how you selected the learning rate and regularization parameter, and report the selected hyperparameters. Did you use different parameters for the different datasets?
+
+
+### Include a plot illustrating convergence of SGD/Adagrad for your selected hyperparamters (this can be for a single fold, and should show the training error over the number of SGD/Adagrad epochs).
+
+\begin{figure}[!htb]
+\centering
+\begin{minipage}{.33\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/SVM-tiny-plot.png}
+  \caption{$`toydata\_tiny.csv`$}
+\end{minipage}%
+\begin{minipage}{.33\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/SVM-large-plot.png}
+  \caption{$`toydata\_large.csv`$}
+\end{minipage}%
+\begin{minipage}{.33\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/SVM-tiny-plot.png}
+  \caption{$`imdb.npz`$}
+\end{minipage}
+\caption{Connvergence of SGD for selected hyperparamters for each data set}
+\label{fig:RFF}
+\end{figure}
+
+### Report the achieved classification accuracy and runtime for each of the datasets. Does the number of RFFs affect the classification accuracy? If so, how?
+All code leading up to the following classification accuracies can be found in our Jupyter Notebook:
+
+| Dataset            | Training accuracy |  5-fold cross-validation accuracy |
+|--------------------|-------------------|-----------------------------------|
+| toydata_tiny.csv   | 0.995             | 0.93                              |
+| toydata_large.csv  | 1.0               | 1.0                               |
+| imdb.npz           | ?                 | ?                                 |
+
+### Briefly discuss your implementation of RFFs.
+Our `RandomFourierFeatures` class implements Random Fourier Features (RFFs) for approximate kernel 
+feature mapping. Here's a brief overview of its key components:
+
+- **Initialization:** The constructor `__init__` initializes the RFFs with parameters `n_components` (number of random
+  Fourier features) and `gamma` (scale parameter for the random features). It also initializes the `weights` and `bias` parameters to `None`.
+
+- **Fitting:** The fit method generates random weights and biases for the RFFs. It generates random `weights` from a
+  normal distribution with mean $0$ and variance $2 * `gamma`$, and `bias` from a uniform distribution between $0$ and
+  $2 * \pi$. The number of weights and biases is determined by the input dimensionality `d` and the specified number
+  of components `n_components`.
+
+- **Transformation:** The `transform` method applies the random feature mapping to input data `X`. It computes the dot
+  product of the input data and the random weights, adds the biases, and applies the cosine function to 
+  obtain the transformed features. The scaling factor `sqrt(2/n_components)` is applied to normalize the 
+  features.
+
+- **Fit-Transform:** The `fit_transform` method combines fitting and transformation steps. It fits the RFFs to the 
+  input data `X` and then transforms `X` using the generated random features.
+
+### For IMDB, report the runtime and performance (in plots or a single plot) when training on 1000, 2000, and 3000 training samples, respectively. Report the same when using sklearn’s svm.SVC class. What do you observe?
