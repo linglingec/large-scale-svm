@@ -11,15 +11,16 @@ datasets, select a suitable learning rate and regularization parameter.
 
 ### Report how you selected the learning rate and regularization parameter, and report the selected hyperparameters. Did you use different parameters for the different datasets?  
 In order to find the best parameters for our implemenation we performed --------------cross validation for 
-cross_validate_svm GRID SEARCH-----------. For each data set we tested the learning rates $0.001, 0.01, 0.1$ as well as
-the regularization parameters ($\lambda$) $0.1, 0.05, 0.1$ and their combinations. The final selected
+cross_validate_svm GRID SEARCH-----------. For the toydata set we tested the learning rates $0.001, 0.01, 0.1$ as well as
+the regularization parameters ($\lambda$) $0.1, 0.05, 0.1$ and their combinations. For the IMDB data set we just 
+tested $0.001, 0.01$ for learning rate and $0.01, 0.1$ for $\lambda$ because of runtime. The final selected
 hyperparameters are:
 
 | Dataset            | Learning Rate | Regularization Parameter ($\lambda$) |
 |--------------------|---------------|---------------------------------------|
 | toydata_tiny.csv   | 0.001         | 0.01                                  |
 | toydata_large.csv  | 0.001         | 0.01                                  |
-| imdb.npz           | ?       | ?                                  |
+| imdb.npz           | 0.001         | 0.01                                  |
 
 
 ### Include a plot illustrating convergence of SGD for your selected hyperparamters (this
@@ -59,7 +60,7 @@ All code leading up to the following classification accuracies can be found in o
 |--------------------|-------------------|-----------------------------------|
 | toydata_tiny.csv   | 0.995             | 0.99                              |
 | toydata_large.csv  | 1.0               | 1.0                               |
-| imdb.npz           | ?                 | ?                                 |
+| imdb.npz           | 0.85              | 0.86                              |
 
 ### Briefly discuss your implementation of the SVM and SGD
 Our `LinearSVM` class (can be found in `model.py`) implements a linear Support Vector Machine (SVM) model with L2 regularization. 
