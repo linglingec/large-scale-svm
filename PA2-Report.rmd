@@ -192,56 +192,57 @@ a SVM. Train SVMs with RFFs on each of the datasets, selecting a suitable learni
 rate and regularization parameter. Test at least 3 different numbers of RFFs (>= 100 features)
 
 ### Report how you selected the learning rate and regularization parameter, and report the selected hyperparameters. Did you use different parameters for the different datasets?
-Also for this subtask we used the same methods to select the parameters as in the previous tasks. These
-are the chosen hyperparameters:
+In this task let's take the optimal hyperparameters for each dataset from the previous tasks:
 
 | Dataset            | Learning Rate | Regularization Parameter ($\lambda$) |
 |--------------------|---------------|---------------------------------------|
-| toydata_tiny.csv   | ?         | ?                                  |
-| toydata_large.csv  | ?         | ?                                  |
-| imdb.npz           | ?        | ?                                  |
+| toydata_tiny.csv   | 0.1           | 0.01                                  |
+| toydata_large.csv  | 0.1           | 0.01                                  |
+| imdb.npz           | 0.001         |  0.1                                  |
 
 
 ### Include a plot illustrating convergence of SGD/Adagrad for your selected hyperparamters (this can be for a single fold, and should show the training error over the number of SGD/Adagrad epochs).
+You can find plots illustrating convergence of SGD and Adagrad for our selected hyperparameters for all three
+data sets with $100, 200$ and $300$ RFF in our Jupyter Notebook. We will include only one example in
+this report:
+
 
 \begin{figure}[!htb]
 \centering
-\begin{minipage}{.33\textwidth}
+\begin{minipage}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{images/SVM-tiny-plot.png}
+  \includegraphics[width=\linewidth]{images/200RFF-large-SGD.png}
   \caption{$`toydata\_tiny.csv`$}
 \end{minipage}%
-\begin{minipage}{.33\textwidth}
+\begin{minipage}{.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{images/SVM-large-plot.png}
+  \includegraphics[width=\linewidth]{images/200RFF-large-Adagrad.png}
   \caption{$`toydata\_large.csv`$}
 \end{minipage}%
-\begin{minipage}{.33\textwidth}
-  \centering
-  \includegraphics[width=\linewidth]{images/SVM-imdb-plot.png}
-  \caption{$`imdb.npz`$}
-\end{minipage}
-\caption{Connvergence of SGD for selected hyperparamters for each data set}
+\caption{Connvergence of SGD and Adagrad on the large dataset with 200 RFF ($learning\_rate = 0.1$, $\lambda = 0.01$)}
 \label{fig:RFF}
 \end{figure}
 
 ### Report the achieved classification accuracy and runtime for each of the datasets. Does the number of RFFs affect the classification accuracy? If so, how?
 All code leading up to the following classification accuracies can be found in our Jupyter Notebook:
 
--
-- WHAT CHANGED IN HYPERPARAMTER TUNING
--
+| Dataset            | RFF  | 5-fold cross-validation runtime   |  5-fold cross-validation accuracy |
+|--------------------|------|-----------------------------------|-----------------------------------|
+| toydata_tiny.csv   | 100  | 0.12 s                            | 0.96                              |
+| toydata_tiny.csv   | 200  | 0.12 s                            | 0.91                              |
+| toydata_tiny.csv   | 300  | 0.12 s                            | 0.94                              |
+| toydata_large.csv  | 100  | 26.09 s                           | 1.0                               |
+| toydata_large.csv  | 200  | 33.26 s                           | 1.0                               |
+| toydata_large.csv  | 300  | 39.38 s                           | 1.0                               |
+| imdb.npz           | 100  | 17.29 s                           | 0.51                              |
+| imdb.npz           | 200  | 17.30 s                           | 0.50                              |
+| imdb.npz           | 300  | 18.29 s                           | 0.49                              |
 
-
-| Dataset            | 5-fold cross-validation runtime   |  5-fold cross-validation accuracy |
-|--------------------|-----------------------------------|-----------------------------------|
-| toydata_tiny.csv   | . s                            | .                              |
-| toydata_large.csv  | . s                           | .                               |
-| imdb.npz           | . s                         | .                              |
-
--
-- Does the number of RFFs affect the classification accuracy
--
+In the `toydata_large.csv` data the accuracy is always $1.0$ so the number of RFF doesn't make any difference.
+However looking at the other two datasets the accuracy is slightly falling with more RFFs. In the `toydata_tiny.csv`
+dataset the accuracy with $300$ RFF is slightly higher than the one with $200$ RFF, but given that in the
+`imdb.npz` dataset the accuracy is gettig less with higher RFF, we consider the accuracy of the tiny data with
+$300$ RFF an anomaly.
 
 
 ### Briefly discuss your implementation of RFFs.
