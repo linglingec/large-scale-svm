@@ -184,7 +184,7 @@ rate and regularization parameter. Test at least 3 different numbers of RFFs (>=
 \end{minipage}%
 \begin{minipage}{.33\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{images/SVM-tiny-plot.png}
+  \includegraphics[width=\linewidth]{images/SVM-imdb-plot.png}
   \caption{$`imdb.npz`$}
 \end{minipage}
 \caption{Connvergence of SGD for selected hyperparamters for each data set}
