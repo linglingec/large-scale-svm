@@ -10,8 +10,10 @@ As a baseline model implement a linear SVM and train it in a standard way (i.e.,
 datasets, select a suitable learning rate and regularization parameter.
 
 ### Report how you selected the learning rate and regularization parameter, and report the selected hyperparameters. Did you use different parameters for the different datasets?  
-In order to find the best parameters for our implemenation we performed --------------cross validation for 
-cross_validate_svm GRID SEARCH-----------. For the toydata set we tested the learning rates $0.001, 0.01, 0.1$ as well as
+In order to find the best parameters for our implemenation we performed grid search using our function `grid_search_svm`:
+This function gets a set of learning rates and regularization parameters and for each combination, it trains the SVM model k times (using `Kfold`) on training data, evaluates its performance on validation data, 
+and records the mean accuracy. The parameters with the highest mean accuracy are returned.
+For the toydata set we tested the learning rates $0.001, 0.01, 0.1$ as well as
 the regularization parameters ($\lambda$) $0.1, 0.05, 0.1$ and their combinations. For the IMDB data set we just 
 tested $0.001, 0.01$ for learning rate and $0.01, 0.1$ for $\lambda$ because of runtime. The final selected
 hyperparameters are:
@@ -50,8 +52,6 @@ plots also in Fig \ref{fig:test} for the sake of completeness:
 \caption{Connvergence of SGD for selected hyperparamters for each data set}
 \label{fig:test}
 \end{figure}
-
-# CHANGE FOR IMAGE 3
 
 ### Report the achieved classification accuracy and runtime for each of the datasets.
 All code leading up to the following classification accuracies can be found in our Jupyter Notebook:
