@@ -46,7 +46,7 @@ plots also in Fig \ref{fig:test} for the sake of completeness:
 \end{minipage}%
 \begin{minipage}{.33\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{images/SVM-tiny-plot.png}
+  \includegraphics[width=\linewidth]{images/SVM-imdb-plot.png}
   \caption{$`imdb.npz`$}
 \end{minipage}
 \caption{Connvergence of SGD for selected hyperparamters for each data set}
@@ -121,7 +121,7 @@ All code leading up to the following classification accuracies can be found in o
 
 | Dataset            | 5-fold cross-validation runtime   |  5-fold cross-validation accuracy |
 |--------------------|-----------------------------------|-----------------------------------|
-| toydata_tiny.csv   | 0.09 s                            |  0.99                             |
+| toydata_tiny.csv   | 0.09 s                            | 0.99                              |
 | toydata_large.csv  | 24.65 s                           | 1.0                               |
 | imdb.npz           | 2392.39 s                         | 0.89                              |
 
@@ -132,8 +132,15 @@ However on `imdb.npz`, `Adagrad` helped to improve the accuracy by $0.03$. It al
 91 seconds less to achieve this result.
 
 ### Repeat your experiments using random dropout of input features with probability $p = 0.5$ for the IMDB data. Does this change affect performance and if so, how?
+While repeating the experiment using random dropout of input features the accuracy went down to $0.86$.
+Random dropout is typically used as a regularization technique to prevent overfitting by forcing the
+model to not rely excessively on any single or a small group of features, but in our case it might have affected 
+the model's ability to fully learn and generalize from the dataset by dropping features that were
+critical for making accurate predictions (see Fig 5). 
 
-
+```{r, out.width='33%', fig.align='center', fig.cap="Convergence of Adagrad on the IMDB dataset with dropout", echo=FALSE}
+knitr::include_graphics("images/dropout-plot.png")
+```
 
 ### Briefly discuss your implementation of Adagrad. How did you adjust it to perform stochastic optimization instead of online learning. Provide pseudo-code.
 Our `Adagrad` optimizer adapts the learning rate for each parameter based on the historical gradients. 
