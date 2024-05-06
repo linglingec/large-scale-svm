@@ -204,7 +204,7 @@ In this task let's take the optimal hyperparameters for each dataset from the pr
 ### Include a plot illustrating convergence of SGD/Adagrad for your selected hyperparamters (this can be for a single fold, and should show the training error over the number of SGD/Adagrad epochs).
 You can find plots illustrating convergence of SGD and Adagrad for our selected hyperparameters for all three
 data sets with $100, 200$ and $300$ RFF in our Jupyter Notebook. We will include only one example in
-this report:
+this report (see Figure \ref{fig:RFF})
 
 
 \begin{figure}[!htb]
@@ -266,3 +266,39 @@ feature mapping. Here's a brief overview of its key components:
   input data `X` and then transforms `X` using the generated random features.
 
 ### For IMDB, report the runtime and performance (in plots or a single plot) when training on 1000, 2000, and 3000 training samples, respectively. Report the same when using sklearn’s svm.SVC class. What do you observe?
+These are the runtimes and performances when training on 1000, 2000, and 3000 training samples using our 
+and sklearn’s implemenation:
+
+
+| Implementation | Number of Training Samples | Runtime (s) | Accuracy |
+|----------------|----------------------------|-------------|----------|
+| Ours           | 1000                       | 0.82        | 0.50     |
+| Ours           | 2000                       | 1.04        | 0.50     |
+| Ours           | 3000                       | 1.76        | 0.50     |
+| Sklearn        | 1000                       | 0.80        | 0.52     |
+| Sklearn        | 2000                       | 1.26        | 0.51     |
+| Sklearn        | 3000                       | 2.83        | 0.51     |
+
+You can see corresponding plots in Fig \ref{fig:last}.
+
+
+\begin{figure}[!htb]
+\centering
+\begin{minipage}{.33\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/1000-samples.png}
+  \caption{$1000$ training samples}
+\end{minipage}%
+\begin{minipage}{.33\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/2000-samples.png}
+  \caption{$2000$ training samples}
+\end{minipage}%
+\begin{minipage}{.33\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/3000-samples.png}
+  \caption{$3000$ training samples}
+\end{minipage}
+\caption{Connvergence of Adagrad on the IMDB dataset with $1000, 1000, 3000$ training samples}
+\label{fig:last}
+\end{figure}
