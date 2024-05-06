@@ -111,9 +111,9 @@ the previous sub task. The only difference is that instead of `MiniBatchSGD`, we
 
 | Dataset            | Learning Rate | Regularization Parameter ($\lambda$) |
 |--------------------|---------------|---------------------------------------|
-| toydata_tiny.csv   | ?         | ?                                  |
-| toydata_large.csv  | ?         | ?                                  |
-| imdb.npz           | ?        | ?                                  |
+| toydata_tiny.csv   | 0.1           | 0.01                                  |
+| toydata_large.csv  | 0.1           | 0.01                                  |
+| imdb.npz           | 0.001         |  0.1                                  |
 
 
 ### Report the achieved classification accuracy and runtime for each of the datasets. What is the impact of the adagrad regarding the performance in comparison to standard SGD for the different datasets?
@@ -121,11 +121,15 @@ All code leading up to the following classification accuracies can be found in o
 
 | Dataset            | 5-fold cross-validation runtime   |  5-fold cross-validation accuracy |
 |--------------------|-----------------------------------|-----------------------------------|
-| toydata_tiny.csv   | . s                            | .                              |
-| toydata_large.csv  | . s                           | .                               |
-| imdb.npz           | . s                         | .                              |
+| toydata_tiny.csv   | 0.09 s                            |  0.99                             |
+| toydata_large.csv  | 24.65 s                           | 1.0                               |
+| imdb.npz           | 2392.39 s                         | 0.89                              |
 
-
+The impact of `Adagrad` is barely noticeable on `toydata_tiny.csv` and `toydata_large.csv`. 
+There wasn't much room to improve given the accuracies in the preiovus task were already
+$0.99$ and $1.0$ and also the runtime is quite the same.  
+However on `imdb.npz`, `Adagrad` helped to improve the accuracy by $0.03$. It also took approx.
+91 seconds less to achieve this result.
 
 ### Repeat your experiments using random dropout of input features with probability $p = 0.5$ for the IMDB data. Does this change affect performance and if so, how?
 
