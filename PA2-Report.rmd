@@ -1,0 +1,86 @@
+---
+title: PA2 Report - MMD
+author: Egor Fadeev, 12313685 - Thomas Geier, 12026958
+date: 04.05.2024
+output: pdf_document
+---
+
+# Linear SVM Model
+As a baseline model implement a linear SVM and train it in a standard way (i.e., use standard mini-batch SGD). Train a SVM for each of the
+datasets, select a suitable learning rate and regularization parameter.
+
+### Report how you selected the learning rate and regularization parameter, and report the selected hyperparameters. Did you use different parameters for the different datasets?  
+In order to find the best parameters for our implemenation we performed --------------cross validation for 
+cross_validate_svm GRID SEARCH-----------. For each data set we tested the learning rates $0.001, 0.01, 0.1$ as well as
+the regularization parameters ($\lambda$) $0.1, 0.05, 0.1$ and their combinations. The final selected
+hyperparameters are:
+
+| Dataset            | Learning Rate | Regularization Parameter ($\lambda$) |
+|--------------------|---------------|---------------------------------------|
+| toydata_tiny.csv   | 0.001         | 0.01                                  |
+| toydata_large.csv  | 0.001         | 0.01                                  |
+| imdb.npz           | ?       | ?                                  |
+
+
+### Include a plot illustrating convergence of SGD for your selected hyperparamters (this
+can be for a single fold, and should show the training error over the number of SGD
+epochs).  
+
+All calculations, code and plots can be found in our Jupyter Notebook. You can find the
+plots also in Fig \ref{fig:test} for the sake of completeness:
+
+\begin{figure}[!htb]
+\centering
+\begin{minipage}{.33\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/SVM-tiny-plot.png}
+  \caption{$`toydata\_tiny.csv`$}
+\end{minipage}%
+\begin{minipage}{.33\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/SVM-large-plot.png}
+  \caption{$`toydata\_large.csv`$}
+\end{minipage}%
+\begin{minipage}{.33\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{images/SVM-tiny-plot.png}
+  \caption{$`imdb.npz`$}
+\end{minipage}
+\caption{Connvergence of SGD for selected hyperparamters for each data set}
+\label{fig:test}
+\end{figure}
+
+# CHANGE FOR IMAGE 3
+
+### Report the achieved classification accuracy and runtime for each of the datasets.
+All code leading up to the following classification accuracies can be found in our Jupyter Notebook:
+
+| Dataset            | Training accuracy |  5-fold cross-validation accuracy |
+|--------------------|-------------------|-----------------------------------|
+| toydata_tiny.csv   | 0.995             | 0.99                              |
+| toydata_large.csv  | 1.0               | 1.0                               |
+| imdb.npz           | ?                 | ?                                 |
+
+### Briefly discuss your implementation of the SVM and SGD
+Our `LinearSVM` class (can be found in `model.py`) implements a linear Support Vector Machine (SVM) model with L2 regularization. 
+Here's a brief discussion of its key components:
+
+- **Initialization**:  The constructor `__init__` initializes the SVM model with a regularization parameter `lambda_`. 
+  It also initializes the weight vector `w` to `None`.  
+
+- **Training**: The `fit` method trains the SVM model using stochastic gradient descent (SGD)
+  optimization. It takes input data X, target labels y, an optimizer object (in the first case `MiniBatchSGD`, later `Adagrad` from `optimizers.py`), and optional
+  parameters such as the number of epochs and batch size. Within each epoch, it iterates over 
+  mini-batches of the training data and updates the weight vector `w` using the optimizer's `update_weights` method. 
+  It also tracks the loss history during training so one can plot it like in Fig \ref{fig:test}.  
+
+- **Prediction**: The `predict` method takes input data `X` and predicts the class labels using the 
+  learned weight vector `w`. It computes the dot product of the input data and `w` and applies the 
+  sign function to determine the predicted class labels.
+
+
+
+
+
+
+Further information for parameters and returns can be found in the `LinearSVM` of the classes in `model.py`.
