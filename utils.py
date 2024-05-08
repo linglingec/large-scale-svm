@@ -56,7 +56,7 @@ def grid_search_svm(
     optimizer,
     lambdas,
     learning_rates,
-    epochs=30,
+    n_epochs=30,
     batch_size=10,
     n_splits=5,
 ):
