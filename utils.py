@@ -46,6 +46,9 @@ def get_data(dataset):
         X_train = X_train.item().todense()
         X_test = X_test.item().todense()
 
+        y_train = np.where(y_train == 0, -1, 1)
+        y_test = np.where(y_test == 0, -1, 1)
+
         return X_train, X_test, y_train, y_test
 
 
