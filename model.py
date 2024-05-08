@@ -40,7 +40,7 @@ class LinearSVM:
         self.lambda_ = lambda_
         self.w = None
 
-    def fit(self, X, y, optimizer, epochs=30, batch_size=10):
+    def fit(self, X, y, optimizer, n_epochs=30, batch_size=10):
         """
         Train the SVM classifier on the given data.
 
@@ -64,7 +64,7 @@ class LinearSVM:
         """
         self.w = np.zeros(X.shape[1])
         loss_history = []
-        pbar = tqdm(range(epochs), desc="Training Progress")
+        pbar = tqdm(range(n_epochs), desc="Training Progress")
 
         for epoch in pbar:
             mini_batches = optimizer.create_mini_batches(X, y, batch_size)
